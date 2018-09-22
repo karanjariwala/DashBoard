@@ -258,7 +258,7 @@ const data = {
 };
 
 const getFixtures = endPoint => {
-  return Promise.resolve(data[endPoint]);
+  return new Promise(resolve => setTimeout(resolve(data[endPoint]), 5000));
 };
 
 export default getFixtures;

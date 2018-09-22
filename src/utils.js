@@ -1,5 +1,5 @@
 // Compute the edit distance between the two given strings
-const getEditDistance = (a, b) => {
+export const getEditDistance = (a, b) => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
 
@@ -37,7 +37,7 @@ const getEditDistance = (a, b) => {
   return matrix[b.length][a.length];
 };
 
-const serializeObjectValues = (obj, schema) => {
+export const serializeObjectValues = (obj, schema) => {
   return Object.keys(schema).reduce((acc, key) => {
     if (obj[key]) {
       return acc.concat(obj[key]);
@@ -46,7 +46,7 @@ const serializeObjectValues = (obj, schema) => {
   }, "");
 };
 
-const emptyFixture = {
+export const emptyFixture = {
   team1: "",
   team2: "",
   sport: "",
@@ -54,13 +54,17 @@ const emptyFixture = {
   start_time: 0
 };
 
-const cleanAndMapFixtures = (primaryArr, secondaryArr) => {
-  return primaryArr.map(primaryFixObj => {
+const mapAndNormalizeFixtures = (primaryArr, secondaryArr) => {
+  let entitiesObject = {};
+  let result = [];
+  primaryArr.forEach((primaryFixObj, index) => {
     let minDistance;
+
     const primarySerialized = serializeObjectValues(
       primaryFixObj,
       emptyFixture
     );
+
     secondaryArr.forEach(secondaryFixObj => {
       const secondarySerialized = serializeObjectValues(
         secondaryFixObj,
@@ -79,8 +83,18 @@ const cleanAndMapFixtures = (primaryArr, secondaryArr) => {
       }
     });
 
-    return primaryFixObj;
+    primaryFixObj["id"] = `primary-${index}`;
+    result.push(primaryFixObj.id);
+    entitiesObject = {
+      ...entitiesObject,
+      [primaryFixObj["id"]]: primaryFixObj
+    };
   });
+
+  return {
+    entitiesObject,
+    result
+  };
 };
 
-export default cleanAndMapFixtures;
+export default mapAndNormalizeFixtures;
