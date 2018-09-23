@@ -258,7 +258,7 @@ const data = {
 };
 
 const getApi = endPoint => {
-  //Mocking Get Api with delay of 5 seconds
+  //Mocking Get Api with delay of 3 seconds
   return new Promise(
     (resolve, reject) => setTimeout(() => resolve(data[endPoint]), 3000)
     // setTimeout(() => reject("error", 5000), 5000) // To check error
