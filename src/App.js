@@ -13,12 +13,12 @@ import ListCreator from "./Components/ListCreator.jsx";
 import ItemModal from "./Components/ItemModal.jsx";
 
 /**
- * App list Primary fixtures in asceding order of time stamp
- * Tool tip is displayed on each list item
- * Opens Modal to show fixture information in detail when list item is clicked.
- * you can edit field values in modal and save the new values
- * Indicator in list item and modal will show whether Primary fixture info
- * - is exactly same as the Secondary fixture info.
+ * App list Primary fixtures in ascending order of timestamp.
+ * A tooltip is displayed on each list item.
+ * Clicking List Item opens the Modal to show fixture information in detail.
+ * You can edit field values in modal and save the new values.
+ * An indicator is present in the list item and in the modal to
+ * - show whether Primary fixture info (currently) is exactly same as the Secondary fixture info.
  */
 
 class App extends Component {
