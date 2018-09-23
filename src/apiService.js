@@ -1,5 +1,5 @@
 const data = {
-  primary: [
+  "/fixtures/primary": [
     {
       team1: "faceitmajor",
       team2: "2018",
@@ -127,7 +127,7 @@ const data = {
       start_time: 1537021800000
     }
   ],
-  secondary: [
+  "/fixtures/secondary": [
     {
       team1: "faceitmajor",
       team2: "2018",
@@ -257,8 +257,12 @@ const data = {
   ]
 };
 
-const getFixtures = endPoint => {
-  return new Promise(resolve => setTimeout(resolve(data[endPoint]), 5000));
+const getApi = endPoint => {
+  //Mocking Get Api with delay of 5 seconds
+  return new Promise(
+    (resolve, reject) => setTimeout(() => resolve(data[endPoint]), 5000)
+    // setTimeout(() => reject("error", 5000), 5000) // To check error
+  );
 };
 
-export default getFixtures;
+export default getApi;

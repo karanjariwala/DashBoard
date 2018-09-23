@@ -1,0 +1,8 @@
+.field-value {
+  display: inline-block;
+}
+
+.field-action {
+  display: inline-block;
+  margin-left: 20px !important;
+}

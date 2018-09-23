@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { List, Modal, Button, Label, Header } from "semantic-ui-react";
-import moment from "moment";
-import getFixtures from "./apiService";
+import { Loader, Dimmer } from "semantic-ui-react";
+import getApi from "./apiService";
 import {
   mapAndNormalizeFixtures,
   serializeObjectValues,
   getEditDistance,
-  emptyFixture
+  emptyFixture,
+  sortByDate
 } from "./utils";
 import "./App.css";
 import ListCreator from "./Components/ListCreator.jsx";
@@ -15,16 +14,25 @@ import ItemModal from "./Components/ItemModal.jsx";
 
 class App extends Component {
   state = {
+    /**
+     * Fixtures array normalized so that updating a fixture can be done O(1)
+     */
     entitiesObject: {},
     result: [],
+    /**
+     * error and loading states for api
+     */
     error: false,
     loading: false,
+    /**
+     * keeping track of the current fixture selected.
+     */
     itemClicked: ""
   };
 
   componentDidMount() {
     this.setState({ loading: true });
-    Promise.all([getFixtures("primary"), getFixtures("secondary")])
+    Promise.all([getApi("/fixtures/primary"), getApi("/fixtures/secondary")])
       .then(data => {
         const { entitiesObject, result } = mapAndNormalizeFixtures(
           data[0],
@@ -55,38 +63,39 @@ class App extends Component {
   };
 
   saveValue = (key, value, id) => {
-    console.log(this.state.entitiesObject[id], key, value, id);
     const newObj = { ...this.state.entitiesObject[id], [key]: value };
     newObj.editDistance = getEditDistance(
       serializeObjectValues(newObj, emptyFixture),
       serializeObjectValues(newObj.secondary, emptyFixture)
     );
 
-    this.setState(
-      {
-        entitiesObject: {
-          ...this.state.entitiesObject,
-          [id]: newObj
-        }
-      },
-      () => console.log(this.state.entitiesObject[id], key, value, id)
-    );
+    this.setState({
+      entitiesObject: {
+        ...this.state.entitiesObject,
+        [id]: newObj
+      }
+    });
   };
 
   render() {
-    let toRender = "...loading";
+    let toRender = (
+      <Dimmer active inverted>
+        <Loader active size="big" inline="centered">
+          ...Loading
+        </Loader>
+      </Dimmer>
+    );
+
     if (!this.state.loading) {
       if (this.state.error) {
         toRender = "error occured";
       } else {
-        const sortedResult = this.state.result.sort((id1, id2) => {
-          const t1 = this.state.entitiesObject[id1].start_time;
-          const t2 = this.state.entitiesObject[id2].start_time;
-          if (moment(t1).isBefore(t2)) {
-            return -1;
-          }
-          return 1;
-        });
+        const sortedResult = sortByDate(
+          this.state.result,
+          this.state.entitiesObject,
+          "start_time",
+          true
+        );
         toRender = ListCreator({
           arr: sortedResult,
           entities: this.state.entitiesObject,
