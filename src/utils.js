@@ -44,6 +44,9 @@ export const getEditDistance = (a, b) => {
 };
 
 export const serializeObjectValues = (obj, schema) => {
+  /**
+   * Searilaizes object values using object schema
+   */
   return Object.keys(schema).reduce((acc, key) => {
     if (obj[key]) {
       return acc.concat(obj[key]);
@@ -53,6 +56,9 @@ export const serializeObjectValues = (obj, schema) => {
 };
 
 export const emptyFixture = {
+  /**
+   * empty fixture object used as schema.
+   */
   team1: "",
   team2: "",
   sport: "",
@@ -61,6 +67,11 @@ export const emptyFixture = {
 };
 
 export const mapAndNormalizeFixtures = (primaryArr, secondaryArr) => {
+  /**
+   * normalizes fixtures array of objects
+   * finds the secondary fixture using the edit distance by passing serializeObjectValues
+   * secondary fixture that has minimum edit distance with the primary becomes the secondary fixture
+   */
   let entitiesObject = {};
   let result = [];
   primaryArr.forEach((primaryFixObj, index) => {
@@ -104,6 +115,9 @@ export const mapAndNormalizeFixtures = (primaryArr, secondaryArr) => {
 };
 
 export const sortByDate = (result, entities, key, asc) => {
+  /**
+   * sorts result array by date
+   */
   return result.sort((id1, id2) => {
     const t1 = entities[id1][key];
     const t2 = entities[id2][key];
