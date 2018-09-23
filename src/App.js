@@ -1,39 +1,20 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { List } from "semantic-ui-react";
+import { List, Modal, Button, Label, Header } from "semantic-ui-react";
 import dayjs from "dayjs";
 import getFixtures from "./apiService";
 import mapAndNormalizeFixtures from "./utils";
 import "./App.css";
-
-const ListCreator = (arr, entities) => {
-  return (
-    <List selection verticalAlign="middle">
-      {arr.map(id => (
-        <List.Item key={id}>
-          <List.Content>
-            <List.Header>
-              {entities[id].team1} vs {entities[id].team2}
-            </List.Header>
-            <div>{entities[id].sport} </div>
-            <div> {entities[id].championship}</div>
-            <div>
-              Date - {dayjs(entities[id].start_time).format("DD-MM-YYYY")}
-            </div>
-            <div>Time - {dayjs(entities[id].start_time).format("hh:mm a")}</div>
-          </List.Content>
-        </List.Item>
-      ))}
-    </List>
-  );
-};
+import ListCreator from "./Components/ListCreator.jsx";
+import ItemModal from "./Components/ItemModal.jsx";
 
 class App extends Component {
   state = {
     entitiesObject: {},
     result: [],
     error: false,
-    loading: false
+    loading: false,
+    itemClicked: ""
   };
 
   componentDidMount() {
@@ -57,6 +38,18 @@ class App extends Component {
         this.setState({ fixtures: [], error: true, loading: false });
       });
   }
+
+  handleClick = id => e => {
+    this.setState({
+      itemClicked: id
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      itemClicked: ""
+    });
+  };
   render() {
     let toRender = "...loading";
     if (!this.state.loading) {
@@ -71,11 +64,24 @@ class App extends Component {
           }
           return 1;
         });
-        toRender = ListCreator(sortedResult, this.state.entitiesObject);
+        toRender = ListCreator(
+          sortedResult,
+          this.state.entitiesObject,
+          this.handleClick
+        );
       }
     }
 
-    return <div className="App">{toRender}</div>;
+    return (
+      <div className="App">
+        {toRender}
+        <ItemModal
+          item={this.state.entitiesObject[this.state.itemClicked]}
+          open={Boolean(this.state.itemClicked)}
+          handleClose={this.handleClose}
+        />
+      </div>
+    );
   }
 }
 
