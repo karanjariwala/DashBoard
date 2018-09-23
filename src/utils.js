@@ -54,7 +54,7 @@ export const emptyFixture = {
   start_time: 0
 };
 
-const mapAndNormalizeFixtures = (primaryArr, secondaryArr) => {
+export const mapAndNormalizeFixtures = (primaryArr, secondaryArr) => {
   let entitiesObject = {};
   let result = [];
   primaryArr.forEach((primaryFixObj, index) => {

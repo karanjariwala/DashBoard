@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { List, Modal, Button, Label, Header } from "semantic-ui-react";
-import dayjs from "dayjs";
+import moment from "moment";
 import getFixtures from "./apiService";
-import mapAndNormalizeFixtures from "./utils";
+import {
+  mapAndNormalizeFixtures,
+  serializeObjectValues,
+  getEditDistance,
+  emptyFixture
+} from "./utils";
 import "./App.css";
 import ListCreator from "./Components/ListCreator.jsx";
 import ItemModal from "./Components/ItemModal.jsx";
@@ -21,7 +26,6 @@ class App extends Component {
     this.setState({ loading: true });
     Promise.all([getFixtures("primary"), getFixtures("secondary")])
       .then(data => {
-        console.log(data);
         const { entitiesObject, result } = mapAndNormalizeFixtures(
           data[0],
           data[1]
@@ -32,7 +36,6 @@ class App extends Component {
           error: false,
           loading: false
         });
-        console.log(entitiesObject, result);
       })
       .catch(error => {
         this.setState({ fixtures: [], error: true, loading: false });
@@ -50,6 +53,26 @@ class App extends Component {
       itemClicked: ""
     });
   };
+
+  saveValue = (key, value, id) => {
+    console.log(this.state.entitiesObject[id], key, value, id);
+    const newObj = { ...this.state.entitiesObject[id], [key]: value };
+    newObj.editDistance = getEditDistance(
+      serializeObjectValues(newObj, emptyFixture),
+      serializeObjectValues(newObj.secondary, emptyFixture)
+    );
+
+    this.setState(
+      {
+        entitiesObject: {
+          ...this.state.entitiesObject,
+          [id]: newObj
+        }
+      },
+      () => console.log(this.state.entitiesObject[id], key, value, id)
+    );
+  };
+
   render() {
     let toRender = "...loading";
     if (!this.state.loading) {
@@ -59,16 +82,16 @@ class App extends Component {
         const sortedResult = this.state.result.sort((id1, id2) => {
           const t1 = this.state.entitiesObject[id1].start_time;
           const t2 = this.state.entitiesObject[id2].start_time;
-          if (dayjs(t1).isBefore(t2)) {
+          if (moment(t1).isBefore(t2)) {
             return -1;
           }
           return 1;
         });
-        toRender = ListCreator(
-          sortedResult,
-          this.state.entitiesObject,
-          this.handleClick
-        );
+        toRender = ListCreator({
+          arr: sortedResult,
+          entities: this.state.entitiesObject,
+          handleClick: this.handleClick
+        });
       }
     }
 
@@ -79,6 +102,7 @@ class App extends Component {
           item={this.state.entitiesObject[this.state.itemClicked]}
           open={Boolean(this.state.itemClicked)}
           handleClose={this.handleClose}
+          saveValue={this.saveValue}
         />
       </div>
     );

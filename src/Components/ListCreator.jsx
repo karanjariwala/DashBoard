@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { List, Label, Header } from "semantic-ui-react";
-import dayjs from "dayjs";
+import moment from "moment";
 
 function ListCreator(props) {
   const { arr, entities, handleClick } = props;
@@ -15,9 +15,11 @@ function ListCreator(props) {
             <div>{entities[id].sport} </div>
             <div> {entities[id].championship}</div>
             <div>
-              Date - {dayjs(entities[id].start_time).format("DD-MM-YYYY")}
+              Date - {moment(entities[id].start_time).format("DD-MM-YYYY")}
             </div>
-            <div>Time - {dayjs(entities[id].start_time).format("hh:mm a")}</div>
+            <div>
+              Time - {moment(entities[id].start_time).format("hh:mm a")}
+            </div>
             <div>
               {entities[id].editDistance === 0 ? (
                 <Label color="green">Same as secondary</Label>
