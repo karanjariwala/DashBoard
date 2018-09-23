@@ -6,6 +6,11 @@ import "./fieldDecorator.css";
 
 const { string, func, oneOf } = PropTypes;
 
+/**
+ * Decorator any field with edit and save button
+ * Adds Edit and save functionality for a field.
+ */
+
 class FieldDecorator extends PureComponent {
   static propTypes = {
     /**

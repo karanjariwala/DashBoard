@@ -6,6 +6,11 @@ import FieldDecorator from "./FieldDecorator/FieldDecorator";
 
 const { objectOf, number, shape, string, func, bool } = PropTypes;
 
+/**
+ * Portal to show fixture info in Detail
+ * Also indicates whether current primary fixture value is exactly same as secondary.
+ */
+
 ItemModal.propTyps = {
   /**
    * Fixture Item to be shown in the modal

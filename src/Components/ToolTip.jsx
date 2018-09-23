@@ -4,6 +4,10 @@ import PropTypes from "prop-types";
 
 const { string, element, object } = PropTypes;
 
+/**
+ * Takes one child element and creates a tooltip for the same.
+ */
+
 ToolTip.propTypes = {
   /**
    * text to be shown in tool tip

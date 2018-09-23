@@ -6,6 +6,12 @@ import ToolTip from "./ToolTip";
 
 const { arrayOf, string, object, func } = PropTypes;
 
+/**
+ * Creates a List using normalized data (array of ids and entity object)
+ * Show if primary is exactly same as secondary fixture.
+ * handles click on list items
+ */
+
 ListCreator.propTypes = {
   /**
    * array of ids
